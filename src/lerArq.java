@@ -2,40 +2,90 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class lerArq {
+    
+    // 1. A Estrutura do Noh (Implementando Comparable para ordenar sozinho)
+    public static class Noh implements Comparable<Noh> {
+        char caractere;
+        int frequencia;
+        Noh esquerda;
+        Noh direita;
+
+        public Noh(char caractere, int frequencia) {
+            this.caractere = caractere;
+            this.frequencia = frequencia;
+        }
+
+        // Esta é a regra de ouro que ensina o Java a ordenar a lista
+        @Override
+        public int compareTo(Noh outro) {
+            // Retorna negativo se a minha frequência for menor, positivo se for maior
+            return Integer.compare(this.frequencia, outro.frequencia);
+        }
+        
+        // Método apenas para imprimir bonitinho no console
+        @Override
+        public String toString() {
+            return "['" + caractere + "' : " + frequencia + "]";
+        }
+    }
 
     public static void main(String[] args) {
-        String caminhoArquivo = "src/teste.txt"; // Ajustar o caminho se necessário
+        // Lembre-se de colocar um arquivo .txt real aqui para testar
+        String caminhoArquivo = "PAAT1/src/dataset_200MB_real.txt";
 
         try {
-            // 1. Abrindo o arquivo garantindo a leitura em UTF-8
+            // Restaurando a inicialização do leitor para o código compilar
             FileInputStream fis = new FileInputStream(caminhoArquivo);
             InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
-
-            // 2. O BufferedReader é o que salva a memória em arquivos de 200MB
             BufferedReader br = new BufferedReader(isr);
+            
+            Map<Character, Integer> mapaFrequencias = new HashMap<>();
 
-            System.out.println("--- Lendo por Caractere ---");
-
-            // Lemos a primeira letra FORA do while
-            int codigoCaractere = br.read();
-            // O método read() puxa um caractere por vez até chegar no fim (-1)
-            while (codigoCaractere != -1) {
+            System.out.println("Lendo o arquivo e contando caracteres...");
+            
+            int codigoCaractere;
+            while ((codigoCaractere = br.read()) != -1) {
                 char caractere = (char) codigoCaractere;
-                System.out.print(caractere);
-
-                //Anda pra frente
-                codigoCaractere = br.read();
+                mapaFrequencias.put(caractere, mapaFrequencias.getOrDefault(caractere, 0) + 1);
             }
 
             br.close();
-            System.out.println("\n\nLeitura finalizada com sucesso!");
+            System.out.println("Leitura finalizada! Caracteres únicos: " + mapaFrequencias.size());
+
+            // --- O NOSSO OBJETIVO: PASSAR DO MAPA PARA A LISTA DE NÓS ---
+            
+            System.out.println("\nTransferindo dados para a Lista de Nós...");
+            List<Noh> listaDeNos = new ArrayList<>();
+
+            // O for-each varre cada "par" (chave e valor) dentro do mapa
+            for (Map.Entry<Character, Integer> entrada : mapaFrequencias.entrySet()) {
+                char letra = entrada.getKey();
+                int freq = entrada.getValue();
+                
+                // Instancia o Noh e joga na lista
+                listaDeNos.add(new Noh(letra, freq));
+            }
+
+            // A mágica: como o Noh implementa Comparable, Collections.sort ordena a lista inteira instantaneamente!
+            Collections.sort(listaDeNos);
+
+            System.out.println("Lista criada e ordenada com sucesso!\n");
+            
+            // Teste de Sanidade: Imprimindo os 5 caracteres menos frequentes (início da lista)
+            System.out.println("Os 5 caracteres MENOS frequentes (Que ficarão no fundo da Árvore): ");
+            for (int i = 0; i < Math.min(5, listaDeNos.size()); i++) {
+                System.out.println(listaDeNos.get(i));
+            }
 
         } catch (Exception e) {
-            System.out.println("Erro: " + e.getMessage());
+            System.out.println("Deu ruim ao ler o arquivo: " + e.getMessage());
         }
     }
 }
-
-
