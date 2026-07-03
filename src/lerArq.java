@@ -59,7 +59,7 @@ public class lerArq {
             br.close();
             System.out.println("Leitura finalizada! Caracteres únicos: " + mapaFrequencias.size());
 
-            // --- O NOSSO OBJETIVO: PASSAR DO MAPA PARA A LISTA DE NÓS ---
+            // --- TRANSFERINDO DO MAPA PARA A LISTA DE NÓS ---
             
             System.out.println("\nTransferindo dados para a Lista de Nós...");
             List<Noh> listaDeNos = new ArrayList<>();
@@ -78,11 +78,40 @@ public class lerArq {
 
             System.out.println("Lista criada e ordenada com sucesso!\n");
             
-            // Teste de Sanidade: Imprimindo os 5 caracteres menos frequentes (início da lista)
+            // Teste de Sanidade: Imprimindo os 5 caracteres menos frequentes
             System.out.println("Os 5 caracteres MENOS frequentes (Que ficarão no fundo da Árvore): ");
             for (int i = 0; i < Math.min(5, listaDeNos.size()); i++) {
                 System.out.println(listaDeNos.get(i));
             }
+
+            // --- CONSTRUINDO A ÁRVORE DE HUFFMAN ---
+            System.out.println("\nMontando a Árvore...");
+
+            // O laço roda até sobrar apenas 1 nó na lista (que será a Raiz)
+            while (listaDeNos.size() > 1) {
+                
+                // 1. Remove os dois nós com as menores frequências (índices 0 e 1)
+                Noh esquerda = listaDeNos.remove(0);
+                Noh direita = listaDeNos.remove(0);
+                
+                // 2. Cria o Nó Pai somando as frequências
+                // Usamos o caractere '*' (ou qualquer outro) porque o pai não guarda letra, só os filhos guardam
+                Noh pai = new Noh('*', esquerda.frequencia + direita.frequencia);
+                pai.esquerda = esquerda;
+                pai.direita = direita;
+                
+                // 3. Adiciona o pai de volta na lista
+                listaDeNos.add(pai);
+                
+                // 4. Reordena a lista para que o pai caia na posição correta
+                Collections.sort(listaDeNos);
+            }
+            
+            // 5. O troféu do dia: A Raiz!
+            Noh raizDaArvore = listaDeNos.get(0);
+            
+            System.out.println("Árvore construída com sucesso!");
+            System.out.println("Frequência total na raiz: " + raizDaArvore.frequencia);
 
         } catch (Exception e) {
             System.out.println("Deu ruim ao ler o arquivo: " + e.getMessage());
