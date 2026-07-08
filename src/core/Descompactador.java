@@ -17,7 +17,7 @@ public class Descompactador {
     // Retorno: nenhum
     // Pré-condição: O arquivo binario de entrada deve existir e possuir um cabecalho valido gravado pelo Compactador
     // Pós-condição: O cabecalho eh lido para reconstruir a arvore, os bytes sao lidos e decodificados bit a bit navegando na arvore, e o texto eh salvo
-    public void descompactar(String caminhoEntrada, String caminhoSaida, CodificadorHuffman codificador) throws IOException, ClassNotFoundException {
+    public void descompactar(String caminhoEntrada, String caminhoSaida, CodificadorHuffman<Character> codificador) throws IOException, ClassNotFoundException {
         
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(caminhoEntrada));
              BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(caminhoSaida), "UTF-8"))) {
@@ -27,11 +27,11 @@ public class Descompactador {
              Map<Character, Integer> frequencias = (Map<Character, Integer>) ois.readObject();
 
              // reconstrói a árvore
-             Noh raiz = codificador.construirArvore(frequencias);
+             Noh<Character> raiz = codificador.construirArvore(frequencias);
              
              int totalCaracteres = raiz.frequencia;
              int caracteresDecodificados = 0;
-             Noh atual = raiz;
+             Noh<Character> atual = raiz;
 
              // le os bytes e navega na árvore
              try {
@@ -47,7 +47,7 @@ public class Descompactador {
 
                          // se chegar em um nó folha
                          if (atual.esquerda == null && atual.direita == null) {
-                             bw.write(atual.caractere);
+                             bw.write(atual.simbolo);
                              caracteresDecodificados++;
                              atual = raiz; // volta pro topo da árvore para a próxima letra
                              
@@ -61,5 +61,8 @@ public class Descompactador {
              } catch (EOFException e) {
              }
         }
+
     }
 }
+
+

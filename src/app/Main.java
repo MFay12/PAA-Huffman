@@ -2,7 +2,9 @@ package app;
 
 import java.util.Scanner;
 import services.ServicoCompressaoCaracter;
+import services.ServicoCompressaoPalavra;
 import services.ServicoDescompressaoCaracter;
+import services.ServicoDescompressaoPalavra;
 
 public class Main {
 
@@ -16,6 +18,9 @@ public class Main {
         ServicoCompressaoCaracter servicoCompCaracter = new ServicoCompressaoCaracter();
         ServicoDescompressaoCaracter servicoDescCaracter = new ServicoDescompressaoCaracter();
 
+        // 2. AQUI: Faltava instanciar os serviços de Palavras!
+        ServicoCompressaoPalavra servicoCompPalavra = new ServicoCompressaoPalavra();
+        ServicoDescompressaoPalavra servicoDescPalavra = new ServicoDescompressaoPalavra();
         boolean rodando = true;
 
         while (rodando) {
@@ -56,9 +61,11 @@ public class Main {
                         break;
                     case 3:
                         System.out.println("Iniciando compressão por palavra para " + caminhoEntrada);
+                        servicoCompPalavra.executarCompactacao(caminhoEntrada, caminhoSaida);
                         break;
                     case 4:
                         System.out.println("Iniciando descompressão por palavra para " + caminhoEntrada);
+                        servicoDescPalavra.executarDescompactacao(caminhoEntrada, caminhoSaida);
                         break;
                     default:
                         System.out.println("Opção inválida... Tente novamente.");

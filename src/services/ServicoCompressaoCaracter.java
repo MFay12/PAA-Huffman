@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class ServicoCompressaoCaracter {
 
-    private CodificadorHuffman codificador;
+    private CodificadorHuffman<Character> codificador;
     private Compactador compactador;
 
     // Entrada: nenhuma

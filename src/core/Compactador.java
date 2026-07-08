@@ -49,5 +49,71 @@ public class Compactador {
             
             oos.writeByte(bitsNoBuffer); // guardando o padding no final do arquivo
         }
-    }    
+    }
+    public void compactarPorPalavra(String caminhoEntrada, String caminhoSaida, Map<String, String> dicionario, Map<String, Integer> frequencias) throws IOException {
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(caminhoSaida));
+             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(caminhoEntrada), "UTF-8"))) {
+
+            oos.writeObject(frequencias);
+
+            int buffer = 0;
+            int bitsNoBuffer = 0;
+
+            StringBuilder construtorPalavra = new StringBuilder();
+            int charLido;
+
+            while ((charLido = br.read()) != -1) {
+                char c = (char) charLido;
+
+                if (Character.isLetterOrDigit(c)) {
+                    construtorPalavra.append(c);
+                } else {
+                    // 1. Grava os bits da palavra inteira
+                    if (construtorPalavra.length() > 0) {
+                        String codigoBinario = dicionario.get(construtorPalavra.toString());
+                        if (codigoBinario != null) {
+                            for (char bitChar : codigoBinario.toCharArray()) {
+                                buffer = (buffer << 1) | (bitChar == '1' ? 1 : 0);
+                                bitsNoBuffer++;
+                                if (bitsNoBuffer == 8) { oos.writeByte(buffer); buffer = 0; bitsNoBuffer = 0; }
+                            }
+                        }
+                        construtorPalavra.setLength(0);
+                    }
+
+                    // 2. Grava os bits do espaço/pontuação
+                    String codigoSeparador = dicionario.get(String.valueOf(c));
+                    if(codigoSeparador != null) {
+                        for (char bitChar : codigoSeparador.toCharArray()) {
+                            buffer = (buffer << 1) | (bitChar == '1' ? 1 : 0);
+                            bitsNoBuffer++;
+                            if (bitsNoBuffer == 8) { oos.writeByte(buffer); buffer = 0; bitsNoBuffer = 0; }
+                        }
+                    }
+                }
+            }
+
+            // Grava a rebarba da última palavra (se houver)
+            if (construtorPalavra.length() > 0) {
+                String codigoBinario = dicionario.get(construtorPalavra.toString());
+                if (codigoBinario != null) {
+                    for (char bitChar : codigoBinario.toCharArray()) {
+                        buffer = (buffer << 1) | (bitChar == '1' ? 1 : 0);
+                        bitsNoBuffer++;
+                        if (bitsNoBuffer == 8) { oos.writeByte(buffer); buffer = 0; bitsNoBuffer = 0; }
+                    }
+                }
+            }
+
+            // Grava os bits pendentes no buffer (padding)
+            if (bitsNoBuffer > 0) {
+                buffer = buffer << (8 - bitsNoBuffer);
+                oos.writeByte(buffer);
+            }
+            oos.writeByte(bitsNoBuffer);
+        }
+    }
 }
+
+

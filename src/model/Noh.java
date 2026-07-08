@@ -1,17 +1,17 @@
 package model;
 
-public class Noh implements Comparable<Noh> {
-    public char caractere;
+public class Noh<T> implements Comparable<Noh<T>> {
+    // O caractere agora passa a ser um "simbolo" genérico
+    public T simbolo;
     public int frequencia;
-    public Noh esquerda;
-    public Noh direita;
-
+    public Noh<T> esquerda;
+    public Noh<T> direita;
     // Entrada: Caractere a ser armazenado no nó e sua frequencia de aparicao
     // Retorno: nenhum
     // Pré-condição: Nenhuma
     // Pós-condição: Um novo objeto Noh eh instanciado com o caractere e a frequencia informados
-    public Noh(char caractere, int frequencia) {
-        this.caractere = caractere;
+    public Noh(T simbolo, int frequencia) {
+        this.simbolo = simbolo;
         this.frequencia = frequencia;
     }
 
@@ -20,7 +20,7 @@ public class Noh implements Comparable<Noh> {
     // Pré-condição: O objeto 'outro' nao deve ser nulo
     // Pós-condição: A ordenacao baseada nas frequencias dos nos eh estabelecida (usada pela PriorityQueue)
     @Override
-    public int compareTo(Noh outro) {
+    public int compareTo(Noh<T> outro) {
         return Integer.compare(this.frequencia, outro.frequencia);
     }
 
@@ -30,6 +30,6 @@ public class Noh implements Comparable<Noh> {
     // Pós-condição: Uma string legivel contendo o caractere e a frequencia eh retornada para exibicao no console
     @Override
     public String toString() {
-        return "['" + caractere + "' : " + frequencia + "]";
+        return "['" + simbolo + "' : " + frequencia + "]";
     }
 }

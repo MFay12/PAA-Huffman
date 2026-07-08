@@ -25,4 +25,40 @@ public class GerenciadorIO {
         }
         return mapaFrequencias;
     }
+    // NOVO MÉTODO: Lê o arquivo agrupando letras em palavras e separando pontuações
+    public static Map<String, Integer> gerarFrequenciasPalavras(String caminhoArquivo) throws IOException {
+        Map<String, Integer> mapaFrequencias = new HashMap<>();
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(caminhoArquivo), "UTF-8"))) {
+            StringBuilder construtorPalavra = new StringBuilder();
+            int charLido;
+
+            while ((charLido = br.read()) != -1) {
+                char c = (char) charLido;
+
+                // Se for letra ou número, vai aglomerando para formar a palavra
+                if (Character.isLetterOrDigit(c)) {
+                    construtorPalavra.append(c);
+                } else {
+                    // Se bateu num espaço ou pontuação, salva a palavra que estava se formando
+                    if (construtorPalavra.length() > 0) {
+                        String palavra = construtorPalavra.toString();
+                        mapaFrequencias.put(palavra, mapaFrequencias.getOrDefault(palavra, 0) + 1);
+                        construtorPalavra.setLength(0); // Limpa para a próxima palavra
+                    }
+
+                    // Salva o espaço ou pontuação como um símbolo individual no mapa
+                    String separador = String.valueOf(c);
+                    mapaFrequencias.put(separador, mapaFrequencias.getOrDefault(separador, 0) + 1);
+                }
+            }
+
+            // Garante que a última palavra do texto também seja salva
+            if (construtorPalavra.length() > 0) {
+                String palavra = construtorPalavra.toString();
+                mapaFrequencias.put(palavra, mapaFrequencias.getOrDefault(palavra, 0) + 1);
+            }
+        }
+        return mapaFrequencias;
+    }
 }

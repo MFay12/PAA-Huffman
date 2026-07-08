@@ -7,7 +7,7 @@ import model.Noh;
 
 public class ServicoDescompressaoCaracter {
     
-    private CodificadorHuffman codificador;
+    private CodificadorHuffman<Character> codificador;
     private Descompactador descompactador;
 
 
