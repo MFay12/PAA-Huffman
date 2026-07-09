@@ -53,19 +53,32 @@ public class Main {
                 switch (opcao) {
                     case 1:
                         System.out.println("Iniciando compressão por caracter para  " + caminhoEntrada);
+                        long inicioCompCarac = System.currentTimeMillis();
                         servicoCompCaracter.executarCompactacao(caminhoEntrada, caminhoSaida);
+                        long fimCompCarac = System.currentTimeMillis();
+                        System.out.println("TEMPO DE EXECUÇÃO: " + (fimCompCarac - inicioCompCarac) + " ms");
+
                         break;
                     case 2:
                         System.out.println("Iniciando descompressão por caracter para " + caminhoEntrada);
+                        long inicioDescompCarac = System.currentTimeMillis();
                         servicoDescCaracter.executarDescompactacao(caminhoEntrada, caminhoSaida);
+                        long fimDescompCarac = System.currentTimeMillis();
+                        System.out.println("TEMPO DE EXECUÇÃO: " + (fimDescompCarac - inicioDescompCarac) + " ms");
                         break;
                     case 3:
                         System.out.println("Iniciando compressão por palavra para " + caminhoEntrada);
+                        long inicioCompP = System.currentTimeMillis();
                         servicoCompPalavra.executarCompactacao(caminhoEntrada, caminhoSaida);
+                        long fimCompP = System.currentTimeMillis();
+                        System.out.println("TEMPO DE EXECUÇÃO: " + (fimCompP - inicioCompP) + " ms");
                         break;
                     case 4:
                         System.out.println("Iniciando descompressão por palavra para " + caminhoEntrada);
+                        long inicioDescompP = System.currentTimeMillis();
                         servicoDescPalavra.executarDescompactacao(caminhoEntrada, caminhoSaida);
+                        long fimDescompP = System.currentTimeMillis();
+                        System.out.println("TEMPO DE EXECUÇÃO: " + (fimDescompP - inicioDescompP) + " ms");
                         break;
                     default:
                         System.out.println("Opção inválida... Tente novamente.");
